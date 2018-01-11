@@ -4,29 +4,48 @@ Spyder Editor
 
 This is a temporary script file.
 """
-
 import matplotlib.pyplot as plt
 
-x = [1,2,3,4,5,6,7,8]
-y = [5,7,4,3,1,6,2,8]
-
-plt.plot(x,y,':',label='scatter type')
-
-x = [1,2,3,4,5,6,7,8]
-y = [2,2,3,3,1,5,2,5]
-
-plt.plot(x,y,'-.',label='scatter type')
-
-x = [1,2,3,4,5,6,7,8]
-y = [5,7,1,3,1,1,2,1]
-
-plt.plot(x,y,'--',label='scatter type')
+def gerarGrafico(x, y):
+    plt.plot(x,y,label='Primeira linha')
+    plt.xlabel('Eixo X')
+    plt.ylabel('Eixo Y')
+    plt.title('Titulo do gráfico')
+    plt.legend()
+    plt.show()
 
 
+def eulerExplicito(x, y, delta_t):
+    
+    #y_k1 = y_k + delta_t * f(x_k, y_k)
+    for k in range(0, n):
+        y_k1 = y[k] + delta_t * modelo(x[k], y[k])
+        t_k1 = x[k] + delta_t
+        x.append(t_k1)
+        y.append(y_k1)        
+        
+
+def modelo(x_k, y_k):
+    return y_k
 
 
-plt.xlabel('Eixo X')
-plt.ylabel('Eixo Y')
-plt.title('Titulo do gráfico')
-plt.legend()
-plt.show()
+def main():
+    
+    #Dados iniciais
+    t0 = 0
+    tf = 10
+    n = 32
+    y0 = 1
+    delta_t = (tf - t0)/n
+    
+    #Lista dos resultados com C.I. adicionada
+    x = [t0]
+    y = [y0]
+    
+    #metodo numerico
+    eulerExplicito(x, y, delta_t)
+    
+    #saida
+    gerarGrafico(x, y)
+    
+main()
