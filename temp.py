@@ -7,15 +7,24 @@ This is a temporary script file.
 
 import matplotlib.pyplot as plt
 
-x = [1,2,3]
-y = [5,7,4]
+x = [1,2,3,4,5,6,7,8]
+y = [5,7,4,3,1,6,2,8]
 
-x2 = [1,2,3]
-y2 = [10,14,12]
+plt.plot(x,y,':',label='scatter type')
+
+x = [1,2,3,4,5,6,7,8]
+y = [2,2,3,3,1,5,2,5]
+
+plt.plot(x,y,'-.',label='scatter type')
+
+x = [1,2,3,4,5,6,7,8]
+y = [5,7,1,3,1,1,2,1]
+
+plt.plot(x,y,'--',label='scatter type')
 
 
-plt.plot(x,y,label='Primeira linha')
-plt.plot(x2,y2,label='Segunda linha')
+
+
 plt.xlabel('Eixo X')
 plt.ylabel('Eixo Y')
 plt.title('Titulo do gráfico')
