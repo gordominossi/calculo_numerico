@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Jan 13 21:18:14 2018
+
+@author: mac
+"""
+
 # -*- coding: utf-8 -*-
 """
 Spyder Editor
@@ -30,6 +38,7 @@ def eulerExplicito(x_k, y_k):
 #    return y_k
     return (math.e ** (2 * x_k)) * y_k
         
+
 def gerarPontosDaSolucaoExata(XE, YE, n, h):
     for k in range(0, n):
         xe_k1 = XE[k] + h
@@ -50,7 +59,7 @@ def main():
     n = 32
     y0 = 1
     h = (tf - t0)/n
-    print(h)
+    
     #Lista dos resultados com C.I. adicionada
     X = [t0]
     Y = [y0]
