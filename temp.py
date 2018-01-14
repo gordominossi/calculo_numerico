@@ -5,66 +5,90 @@ Spyder Editor
 This is a temporary script file.
 """
 import matplotlib.pyplot as plt
-import math
-
-def gerarGrafico(X, Y, XE, YE):
-    plt.plot(X,Y,':',label='Primeira linha')
-    plt.plot(XE,YE,label='Solução exata')
-    plt.xlabel('Eixo X')
-    plt.ylabel('Eixo Y')
-    plt.title('Titulo do gráfico')
-    plt.legend()
-    plt.show()
 
 
-def metodoDePassoUnico(X, Y, n, h):
-    #y_k1 = y_k + h * f(x_k, y_k)
-    for k in range(0, n):
-        t_k1 = X[k] + h
-        y_k1 = Y[k] + h * eulerExplicito(X[k], Y[k])
-        Y.append(y_k1)
-        X.append(t_k1)
-        
-        
-def eulerExplicito(x_k, y_k):
-#    return y_k
-    return (math.e ** (2 * x_k)) * y_k
-        
-def gerarPontosDaSolucaoExata(XE, YE, n, h):
-    for k in range(0, n):
-        xe_k1 = XE[k] + h
-        ye_k1 = calcularSolucaoExata(xe_k1, h)
-        XE.append(xe_k1)
-        YE.append(ye_k1)
+
+#Classe CONSTRUTORDEGRAFICO
+class ConstrutorDeGrafico:
+
+    def adicionar(self, X, Y, T, n, tracejado):
+        plt.plot(T, X, tracejado, label='Aprox n = ' + str(n))
+        plt.plot(T, Y, tracejado)
+
+
+    def mostrar(self):
+        plt.xlabel('Eixo T')
+        plt.ylabel('Eixo X e Y')
+        plt.title('Titulo do gráfico')
+        plt.legend()
+        plt.show()
+#Fim da classe CONSTRUTORDEGRAFICO
+
+
+
+#Classe SIMULADOR
+class Simulador:
     
+    def __init__(self, n):
+        self.n = n
+        self.X = []
+        self.Y = []
+        self.T = []
+        self.__simular()
         
-def calcularSolucaoExata(x, h):
-    #return x * (math.e ** h)
-    return math.e ** ((1/2) * ( (math.e ** (2*x)) - 1 ))
-
-
+        
+    def __simular(self):
+        #Dados iniciais
+        t0 = 0
+        tf = 40
+        h = (tf - t0)/self.n
+        
+        #Condicoes iniciais
+        x0 = 1
+        y0 = 0.5
+        
+        #Lista dos resultados com C.I. adicionada
+        self.X.append(x0)
+        self.Y.append(y0)
+        self.T.append(t0)
+        
+        #chamando metodo numerico
+        self.__metodoDePassoUnicoBidimensional(h)
+    
+    
+    def __metodoDePassoUnicoBidimensional(self, h):
+        for k in range(0, self.n):
+            t_k1 = self.T[k] + h
+            x_k1 = self.X[k] + h * self.__eulerExplicito1(self.X[k], self.Y[k])
+            y_k1 = self.Y[k] + h * self.__eulerExplicito2(self.X[k], self.Y[k])
+            self.T.append(t_k1)
+            self.X.append(x_k1)
+            self.Y.append(y_k1)
+            
+            
+    def __eulerExplicito1(self, x, y):
+        return (x * 1.0 - (x * y * 0.5) )
+    
+    
+    def __eulerExplicito2(self, x, y):
+        return (y * (-0.75) + (y * x * 0.5) )
+    
+#Fim da classe SIMULADOR
+        
+    
+    
 def main():
-    #Dados iniciais
-    t0 = 0
-    tf = 1
-    n = 32
-    y0 = 1
-    h = (tf - t0)/n
-    print(h)
-    #Lista dos resultados com C.I. adicionada
-    X = [t0]
-    Y = [y0]
+
+    construtorDeGrafico = ConstrutorDeGrafico()
     
-    #metodo numerico
-    metodoDePassoUnico(X, Y, n, h)
+    sim1 = Simulador(1024)
+    sim2 = Simulador(512)
+    sim2 = Simulador(256) 
     
-    #Lista com solucao exata    
-    XE = [t0]
-    YE = [y0]
+    construtorDeGrafico.adicionar(sim1.X, sim1.Y, sim1.T, sim1.n, ':')
+    construtorDeGrafico.adicionar(sim2.X, sim2.Y, sim2.T, sim2.n, '-.')
+    construtorDeGrafico.adicionar(sim2.X, sim2.Y, sim2.T, sim2.n, '--')
     
-    gerarPontosDaSolucaoExata(XE, YE, n, h)
-    
-    #saida
-    gerarGrafico(X, Y, XE, YE)
+    construtorDeGrafico.mostrar()
     
 main()
