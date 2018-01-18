@@ -5,7 +5,7 @@ Spyder Editor
 This is a temporary script file.
 """
 import matplotlib.pyplot as plt
-import math
+
 
 
 #Classe CONSTRUTORDEGRAFICO
@@ -43,12 +43,12 @@ class Simulador:
     def __simular(self):
         #Dados iniciais
         t0 = 0
-        tf = 3
-        h = (tf - t0)/self.__calcularN()
+        tf = 30
+        h = (tf - t0)/(2**(5+self.m))
         
         #Condicoes iniciais
-        x0 = 0
-        y0 = 0
+        x0 = 1
+        y0 = 1
         
         #Lista dos resultados com C.I. adicionada
         self.X.append(x0)
@@ -60,24 +60,22 @@ class Simulador:
     
     
     def __metodoDePassoUnicoBidimensional(self, h):
-        for k in range(0, self.__calcularN()):
+        n = 2**(5+self.m)
+        for k in range(0, n):
             t_k1 = self.T[k] + h
             x_k1 = self.X[k] + h * self.__eulerExplicito1(self.X[k], self.Y[k])
-            y_k1 = self.Y[k] + h * self.__eulerExplicito2(self.X[k], self.Y[k], self.T[k])
+            y_k1 = self.Y[k] + h * self.__eulerExplicito2(self.X[k], self.Y[k])
             self.T.append(t_k1)
             self.X.append(x_k1)
             self.Y.append(y_k1)
             
-    def __calcularN(self):
-        return 2**(5+self.m)
-            
             
     def __eulerExplicito1(self, x, y):
-        return y
+        return (x * 6.0 - (x * y * 2.0) )
     
     
-    def __eulerExplicito2(self, x, y, t):
-        return -5*y + 4*x + math.sin(10*t)
+    def __eulerExplicito2(self, x, y):
+        return (y * (-2.0) + (y * x * 3) )
     
 #Fim da classe SIMULADOR
         
@@ -87,14 +85,14 @@ def main():
 
     construtorDeGrafico = ConstrutorDeGrafico()
     
-    sim1 = Simulador(1)
-    sim2 = Simulador(3)
-    sim3 = Simulador(7) 
-    
-    construtorDeGrafico.adicionar(sim1.X, sim1.Y, sim1.T, sim1.m, '--')
+    sim1 = Simulador(11)
+    sim2 = Simulador(12)
+    sim3 = Simulador(17) 
+        
+    construtorDeGrafico.adicionar(sim1.X, sim1.Y, sim1.T, sim1.m, ':')
     construtorDeGrafico.adicionar(sim2.X, sim2.Y, sim2.T, sim2.m, '-.')
-    construtorDeGrafico.adicionar(sim3.X, sim3.Y, sim3.T, sim3.m, ':')
-    
+    construtorDeGrafico.adicionar(sim3.X, sim3.Y, sim3.T, sim3.m, '--')
+   
     construtorDeGrafico.mostrar()
     
 main()
