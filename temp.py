@@ -16,9 +16,11 @@ class ConstrutorDeGrafico:
             
     def adicionar(self, X, Y, T, m, tracejado):
         n = 2**(5+m)
+        self.axarr[0].set_title('Titulo do gráfico 1')
         self.axarr[0].plot(T, X, tracejado, label='Aprox n = ' + str(n))
-        self.axarr[0].set_title('Titulo do gráfico')
+        self.axarr[1].set_title('Titulo do gráfico 2')
         self.axarr[1].plot(T, Y, tracejado)
+
 
     def mostrar(self):
         plt.xlabel('Eixo T')
@@ -43,7 +45,7 @@ class Simulador:
     def __simular(self):
         #Dados iniciais
         t0 = 0
-        tf = 3
+        tf = 5
         h = (tf - t0)/self.__calcularN()
         
         #Condicoes iniciais
@@ -62,8 +64,8 @@ class Simulador:
     def __metodoDePassoUnicoBidimensional(self, h):
         for k in range(0, self.__calcularN()):
             t_k1 = self.T[k] + h
-            x_k1 = self.X[k] + h * self.__eulerExplicito1(self.X[k], self.Y[k])
-            y_k1 = self.Y[k] + h * self.__eulerExplicito2(self.X[k], self.Y[k], self.T[k])
+            x_k1 = self.X[k] + h * self.__fi(self.__eulerExplicito1(self.X[k], self.Y[k], self.T[k]))
+            y_k1 = self.Y[k] + h * self.__fi(self.__eulerExplicito2(self.X[k], self.Y[k], self.T[k]))
             self.T.append(t_k1)
             self.X.append(x_k1)
             self.Y.append(y_k1)
@@ -72,7 +74,11 @@ class Simulador:
         return 2**(5+self.m)
             
             
-    def __eulerExplicito1(self, x, y):
+    def __fi(self, f):
+        return f
+        
+        
+    def __eulerExplicito1(self, x, y, t):
         return y
     
     
@@ -89,11 +95,14 @@ def main():
     
     sim1 = Simulador(1)
     sim2 = Simulador(3)
-    sim3 = Simulador(7) 
+    sim3 = Simulador(4)
+    #sim4 = Simulador(7) 
     
     construtorDeGrafico.adicionar(sim1.X, sim1.Y, sim1.T, sim1.m, '--')
     construtorDeGrafico.adicionar(sim2.X, sim2.Y, sim2.T, sim2.m, '-.')
     construtorDeGrafico.adicionar(sim3.X, sim3.Y, sim3.T, sim3.m, ':')
+    #construtorDeGrafico.adicionar(sim4.X, sim4.Y, sim4.T, sim4.m, 'd')
+
     
     construtorDeGrafico.mostrar()
     
