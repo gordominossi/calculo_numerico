@@ -34,8 +34,17 @@ class ConstrutorDeGrafico:
 #Classe SIMULADOR
 class Simulador:
     
-    def __init__(self, m):
-        self.m = m
+    def __init__(self, file, m):
+        
+        with open(file+'.txt') as f:
+            self.x0 = float(f.readline())
+            self.y0 = float(f.readline())
+            self.t0 = float(f.readline())
+            self.tf = float(f.readline())
+            self.n = int(f.readline())
+            self.m = int(f.readline())
+        f.closed
+        
         self.X = []
         self.Y = []
         self.T = []
@@ -43,19 +52,12 @@ class Simulador:
         
         
     def __simular(self):
-        #Dados iniciais
-        t0 = 0
-        tf = 5
-        h = (tf - t0)/self.__calcularN()
-        
-        #Condicoes iniciais
-        x0 = 0
-        y0 = 0
+        h = (self.tf - self.t0)/self.__calcularN()
         
         #Lista dos resultados com C.I. adicionada
-        self.X.append(x0)
-        self.Y.append(y0)
-        self.T.append(t0)
+        self.X.append(self.x0)
+        self.Y.append(self.y0)
+        self.T.append(self.t0)
         
         #chamando metodo numerico
         self.__metodoDePassoUnicoBidimensional(h)
@@ -71,7 +73,7 @@ class Simulador:
             self.Y.append(y_k1)
             
     def __calcularN(self):
-        return 2**(5+self.m)
+        return self.n*(2**self.m)
             
             
     def __fi(self, f):
@@ -93,14 +95,14 @@ def main():
 
     construtorDeGrafico = ConstrutorDeGrafico()
     
-    sim1 = Simulador(1)
-    sim2 = Simulador(3)
-    sim3 = Simulador(4)
+    sim1 = Simulador('entrada', 1)
+#    sim2 = Simulador(3)
+ #   sim3 = Simulador(4)
     #sim4 = Simulador(7) 
     
     construtorDeGrafico.adicionar(sim1.X, sim1.Y, sim1.T, sim1.m, '--')
-    construtorDeGrafico.adicionar(sim2.X, sim2.Y, sim2.T, sim2.m, '-.')
-    construtorDeGrafico.adicionar(sim3.X, sim3.Y, sim3.T, sim3.m, ':')
+  #  construtorDeGrafico.adicionar(sim2.X, sim2.Y, sim2.T, sim2.m, '-.')
+   # construtorDeGrafico.adicionar(sim3.X, sim3.Y, sim3.T, sim3.m, ':')
     #construtorDeGrafico.adicionar(sim4.X, sim4.Y, sim4.T, sim4.m, 'd')
 
     
