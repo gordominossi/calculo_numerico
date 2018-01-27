@@ -14,10 +14,16 @@ class ConstrutorDeGrafico:
     def __init__(self):
         self.f, self.axarr = plt.subplots(2)
             
-    def adicionar(self, X, Y, T, m, tracejado):
-        n = 2**(5+m)
+        
+    def adicionar(self, arquivo, m, tracejado):
+        with open(arquivo) as ff:
+            linhas = ff.readlines()
+            T = [float(linha.split()[0]) for linha in linhas]
+            X = [float(linha.split()[1]) for linha in linhas]
+            Y = [float(linha.split()[2]) for linha in linhas]
+        ff.close
         self.axarr[0].set_title('Titulo do gráfico 1')
-        self.axarr[0].plot(T, X, tracejado, label='Aprox n = ' + str(n))
+        self.axarr[0].plot(T, X, tracejado, label='Aprox n = ' + str(m))
         self.axarr[1].set_title('Titulo do gráfico 2')
         self.axarr[1].plot(T, Y, tracejado)
 
@@ -34,9 +40,8 @@ class ConstrutorDeGrafico:
 #Classe SIMULADOR
 class Simulador:
     
-    def __init__(self, file, m):
-        
-        with open(file+'.txt') as f:
+    def __init__(self, entrada):
+        with open(entrada + '.txt') as f:
             self.x0 = float(f.readline())
             self.y0 = float(f.readline())
             self.t0 = float(f.readline())
@@ -44,33 +49,35 @@ class Simulador:
             self.n = int(f.readline())
             self.m = int(f.readline())
         f.closed
-        
-        self.X = []
-        self.Y = []
-        self.T = []
         self.__simular()
         
         
     def __simular(self):
+        self.__metodoDePassoUnicoBidimensional()
+    
+    
+    def __metodoDePassoUnicoBidimensional(self):
+        
         h = (self.tf - self.t0)/self.__calcularN()
         
         #Lista dos resultados com C.I. adicionada
-        self.X.append(self.x0)
-        self.Y.append(self.y0)
-        self.T.append(self.t0)
-        
-        #chamando metodo numerico
-        self.__metodoDePassoUnicoBidimensional(h)
-    
-    
-    def __metodoDePassoUnicoBidimensional(self, h):
-        for k in range(0, self.__calcularN()):
-            t_k1 = self.T[k] + h
-            x_k1 = self.X[k] + h * self.__fi(self.__eulerExplicito1(self.X[k], self.Y[k], self.T[k]))
-            y_k1 = self.Y[k] + h * self.__fi(self.__eulerExplicito2(self.X[k], self.Y[k], self.T[k]))
-            self.T.append(t_k1)
-            self.X.append(x_k1)
-            self.Y.append(y_k1)
+        T = [self.t0]
+        X = [self.x0]
+        Y = [self.y0]
+
+        with open(self.nomeArquivoDeSaida(), 'w+') as f:    
+            
+            for k in range(0, self.__calcularN()):
+                t_k1 = T[k] + h
+                x_k1 = X[k] + h * self.__fi(self.__eulerExplicito1(X[k], Y[k], T[k]))
+                y_k1 = Y[k] + h * self.__fi(self.__eulerExplicito2(X[k], Y[k], T[k]))
+                T.append(t_k1)
+                X.append(x_k1)
+                Y.append(y_k1)
+                f.write(str(t_k1) + ' ' + str(x_k1) + ' ' + str(y_k1) + '\n')
+            
+        f.closed
+            
             
     def __calcularN(self):
         return self.n*(2**self.m)
@@ -86,26 +93,28 @@ class Simulador:
     
     def __eulerExplicito2(self, x, y, t):
         return -5*y + 4*x + math.sin(10*t)
+        
     
+    def nomeArquivoDeSaida(self):
+        return 'saida_' + str(self.m) + '.txt'
 #Fim da classe SIMULADOR
         
     
     
 def main():
 
-    construtorDeGrafico = ConstrutorDeGrafico()
-    
-    sim1 = Simulador('entrada', 1)
-#    sim2 = Simulador(3)
- #   sim3 = Simulador(4)
-    #sim4 = Simulador(7) 
-    
-    construtorDeGrafico.adicionar(sim1.X, sim1.Y, sim1.T, sim1.m, '--')
-  #  construtorDeGrafico.adicionar(sim2.X, sim2.Y, sim2.T, sim2.m, '-.')
-   # construtorDeGrafico.adicionar(sim3.X, sim3.Y, sim3.T, sim3.m, ':')
-    #construtorDeGrafico.adicionar(sim4.X, sim4.Y, sim4.T, sim4.m, 'd')
 
     
+    sim2 = Simulador('entrada_2')
+    sim3 = Simulador('entrada_3')
+    sim4 = Simulador('entrada_4')
+    #print(sim1.nomeArquivoDeSaida())
+
+    construtorDeGrafico = ConstrutorDeGrafico()    
+    construtorDeGrafico.adicionar(sim2.nomeArquivoDeSaida(), sim2.m, '--')
+    construtorDeGrafico.adicionar(sim3.nomeArquivoDeSaida(), sim3.m, '-.')
+    construtorDeGrafico.adicionar(sim4.nomeArquivoDeSaida(), sim4.m, ':')
+
     construtorDeGrafico.mostrar()
     
 main()
