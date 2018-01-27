@@ -5,6 +5,7 @@ Spyder Editor
 This is a temporary script file.
 """
 import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
 import math
 
 
@@ -12,9 +13,12 @@ import math
 class ConstrutorDeGrafico:
 
     def __init__(self):
-        self.f, self.axarr = plt.subplots(2)
-            
-        
+        self.fig = plt.figure()
+        self.gs = gridspec.GridSpec(2, 1)
+        self.eixo1 = self.fig.add_subplot(self.gs[0])
+        self.eixo2 = self.fig.add_subplot(self.gs[1])
+
+
     def adicionar(self, arquivo, m, tracejado):
         with open(arquivo) as ff:
             linhas = ff.readlines()
@@ -22,17 +26,22 @@ class ConstrutorDeGrafico:
             X = [float(linha.split()[1]) for linha in linhas]
             Y = [float(linha.split()[2]) for linha in linhas]
         ff.close
-        self.axarr[0].set_title('Titulo do gráfico 1')
-        self.axarr[0].plot(T, X, tracejado, label='Aprox n = ' + str(m))
-        self.axarr[1].set_title('Titulo do gráfico 2')
-        self.axarr[1].plot(T, Y, tracejado)
+
+        self.__configurarEixo(self.eixo1, 'Titulo do gráfico 1', T, X, tracejado, m, 'Eixo X')
+        self.__configurarEixo(self.eixo2, 'Titulo do gráfico 2', T, Y, tracejado, m, 'Eixo Y')        
+        
+        
+    def __configurarEixo(self, eixo, titulo, T, valores, tracejado, m, rotulo_y):
+        eixo.set_title(titulo)
+        eixo.plot(T, valores, tracejado, label='n = ' + str(m), color="black")
+        eixo.set_ylabel(rotulo_y)
+        eixo.set_xlabel('Eixo T')        
+        eixo.legend()
 
 
     def mostrar(self):
-        plt.xlabel('Eixo T')
-        plt.ylabel('Eixo X e Y')
-        plt.legend()
-        plt.show()
+        self.gs.tight_layout(self.fig)
+        
 #Fim da classe CONSTRUTORDEGRAFICO
 
 
@@ -102,19 +111,15 @@ class Simulador:
     
     
 def main():
-
-
     
     sim2 = Simulador('entrada_2')
     sim3 = Simulador('entrada_3')
     sim4 = Simulador('entrada_4')
-    #print(sim1.nomeArquivoDeSaida())
 
     construtorDeGrafico = ConstrutorDeGrafico()    
     construtorDeGrafico.adicionar(sim2.nomeArquivoDeSaida(), sim2.m, '--')
     construtorDeGrafico.adicionar(sim3.nomeArquivoDeSaida(), sim3.m, '-.')
     construtorDeGrafico.adicionar(sim4.nomeArquivoDeSaida(), sim4.m, ':')
-
     construtorDeGrafico.mostrar()
     
 main()
