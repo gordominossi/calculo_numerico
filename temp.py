@@ -46,7 +46,8 @@ class ConstrutorDeGrafico:
             Te = [float(linha.split()[0]) for linha in linhas]
             Ye = [float(linha.split()[1]) for linha in linhas]
         ff.close
-        self.eixo.plot(Te, Ye, label='exata = –', color="black")
+        self.eixo.plot(Te, Ye, label='exata', color="black")
+        self.eixo.legend()
 
     def mostrar(self):
         self.gs.tight_layout(self.fig)
@@ -112,7 +113,7 @@ class Simulador:
         
 
     def __yLinha(self, tk, yk):
-            return - math.sin(tk) + math.cos(tk)
+            return - math.sin(tk) + 2 * math.cos(tk) * math.sin(tk)
     
     def nomeArquivoDeSaida(self):
         return 'saida_' + str(self.m) + '.txt'
@@ -142,7 +143,7 @@ class GeradorDeSolucaoExata:
         f.closed
         
     def __calcularSolucaoExata(self, tk):
-        return math.cos(tk) + math.sin(tk)
+        return math.cos(tk) + math.sin(tk)**2
 #Fim da classe GERADORDESOLUCAOEXATA        
         
     
@@ -151,15 +152,16 @@ def main():
     sim_a = Simulador(1)
     sim_b = Simulador(2)
     sim_c = Simulador(3)
-
-    GeradorDeSolucaoExata()
     
-    construtorDeGrafico = ConstrutorDeGrafico()    
+    construtorDeGrafico = ConstrutorDeGrafico()   
+    
     construtorDeGrafico.adicionar(sim_a.nomeArquivoDeSaida(), sim_a.m, '--')
-    construtorDeGrafico.adicionar(sim_b.nomeArquivoDeSaida(), sim_b.m, '-.')
+    #construtorDeGrafico.adicionar(sim_b.nomeArquivoDeSaida(), sim_b.m, '-.')
+#  construtorDeGrafico.adicionar(sim_c.nomeArquivoDeSaida(), sim_c.m, ':')
     
-   # construtorDeGrafico.adicionarSolucaoExata()
-  #  construtorDeGrafico.adicionar(sim_c.nomeArquivoDeSaida(), sim_c.m, ':')
+    GeradorDeSolucaoExata()    
+    construtorDeGrafico.adicionarSolucaoExata()
+  
     construtorDeGrafico.mostrar()
     
 main()
