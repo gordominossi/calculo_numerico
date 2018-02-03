@@ -11,6 +11,7 @@ Referencias:
     - https://docs.python.org/3/
 """
 
+import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
 import math
 
@@ -19,6 +20,8 @@ class ConstrutorDeGrafico:
 
     def __init__(self):
         self.fig = plt.figure()
+        self.gs = gridspec.GridSpec(1, 1)
+        self.eixo = self.fig.add_subplot(self.gs[0])
 
 
     def adicionar(self, arquivo, m, tracejado):
@@ -27,21 +30,20 @@ class ConstrutorDeGrafico:
             T = [float(linha.split()[0]) for linha in linhas]
             Y = [float(linha.split()[1]) for linha in linhas]
         ff.close
-        self.__configurarEixo('Y X T', T, Y, tracejado, m, 'Y (admensional)')        
+        self.__configurarEixo(self.eixo, 'Y X T', T, Y, tracejado, m, 'Y (admensional)')
         
         
-    def __configurarEixo(self, titulo, T, valores, tracejado, m, rotulo_y):
-        plt.title(titulo)
-        plt.plot(T, valores, tracejado, label='m = ' + str(m), color="black")
-        plt.set_ylabel(rotulo_y)
-        plt.set_xlabel('T (admensional)')        
-        plt.legend()
+    def __configurarEixo(self, eixo, titulo, T, valores, tracejado, m, rotulo_y):
+        eixo.set_title(titulo)
+        eixo.plot(T, valores, tracejado, label='m = ' + str(m), color="black")
+        eixo.set_ylabel(rotulo_y)
+        eixo.set_xlabel('T (admensional)')        
+        eixo.legend()
 
 
     def mostrar(self):
-        plt.show()
+        self.gs.tight_layout(self.fig)
 #Fim da classe CONSTRUTORDEGRAFICO
-
 
 
 #Classe SIMULADOR
