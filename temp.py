@@ -40,6 +40,13 @@ class ConstrutorDeGrafico:
         eixo.set_xlabel('T (admensional)')        
         eixo.legend()
 
+    def adicionarSolucaoExata(self):
+        with open('solucao_exata.txt') as ff:
+            linhas = ff.readlines()
+            Te = [float(linha.split()[0]) for linha in linhas]
+            Ye = [float(linha.split()[1]) for linha in linhas]
+        ff.close
+        self.eixo.plot(Te, Ye, label='exata = –', color="black")
 
     def mostrar(self):
         self.gs.tight_layout(self.fig)
@@ -114,6 +121,32 @@ class Simulador:
 #Fim da classe SIMULADOR
         
     
+#Classe GERADORDESOLUCAOEXATA
+class GeradorDeSolucaoExata:
+    
+    def __init__(self):
+        with open('condicoes_iniciais.txt') as f:
+            self.t0 = float(f.readline())
+            self.tf = float(f.readline())
+            self.y0 = float(f.readline())
+            self.i = 2**10
+        f.closed
+        
+        with open('solucao_exata.txt', 'w+') as f:   
+            h = (self.tf - self.t0)/self.i
+            t = self.t0
+
+            for k in range(0, self.i+1):
+                t_k1 = t + h * k
+                y_k1 = self.__calcularSolucaoExata(t_k1)
+                print(y_k1)
+                f.write(str(t_k1) + ' ' + str(y_k1) + '\n')
+        f.closed
+        
+    def __calcularSolucaoExata(self, tk):
+        return math.cos(tk) + math.sin(tk)
+#Fim da classe GERADORDESOLUCAOEXATA        
+        
     
 def main():
     
@@ -121,9 +154,13 @@ def main():
     sim_b = Simulador('entrada_3')
    # sim_c = Simulador('entrada_7')
 
+    GeradorDeSolucaoExata()
+    
     construtorDeGrafico = ConstrutorDeGrafico()    
     construtorDeGrafico.adicionar(sim_a.nomeArquivoDeSaida(), sim_a.m, '--')
-    construtorDeGrafico.adicionar(sim_b.nomeArquivoDeSaida(), sim_b.m, '-.')
+ #   construtorDeGrafico.adicionar(sim_b.nomeArquivoDeSaida(), sim_b.m, '-.')
+    
+    construtorDeGrafico.adicionarSolucaoExata()
   #  construtorDeGrafico.adicionar(sim_c.nomeArquivoDeSaida(), sim_c.m, ':')
     construtorDeGrafico.mostrar()
     
