@@ -56,17 +56,15 @@ class ConstrutorDeGrafico:
 #Classe SIMULADOR
 class Simulador:
     
-    def __init__(self, entrada):
-        with open(entrada + '.txt') as f:
-            
-            self.y0 = float(f.readline())
-            
+    def __init__(self, m):
+        
+        self.m = m
+        with open('parametros_iniciais.txt') as f:
             self.t0 = float(f.readline())
             self.tf = float(f.readline())
-            
+            self.y0 = float(f.readline())            
             self.n = int(f.readline())
-            self.m = int(f.readline())
-        
+
         f.closed
         self.__simular()
         
@@ -125,7 +123,7 @@ class Simulador:
 class GeradorDeSolucaoExata:
     
     def __init__(self):
-        with open('condicoes_iniciais.txt') as f:
+        with open('parametros_iniciais.txt') as f:
             self.t0 = float(f.readline())
             self.tf = float(f.readline())
             self.y0 = float(f.readline())
@@ -150,17 +148,17 @@ class GeradorDeSolucaoExata:
     
 def main():
     
-    sim_a = Simulador('entrada_1')
-    sim_b = Simulador('entrada_3')
-   # sim_c = Simulador('entrada_7')
+    sim_a = Simulador(1)
+    sim_b = Simulador(2)
+    sim_c = Simulador(3)
 
     GeradorDeSolucaoExata()
     
     construtorDeGrafico = ConstrutorDeGrafico()    
     construtorDeGrafico.adicionar(sim_a.nomeArquivoDeSaida(), sim_a.m, '--')
- #   construtorDeGrafico.adicionar(sim_b.nomeArquivoDeSaida(), sim_b.m, '-.')
+    construtorDeGrafico.adicionar(sim_b.nomeArquivoDeSaida(), sim_b.m, '-.')
     
-    construtorDeGrafico.adicionarSolucaoExata()
+   # construtorDeGrafico.adicionarSolucaoExata()
   #  construtorDeGrafico.adicionar(sim_c.nomeArquivoDeSaida(), sim_c.m, ':')
     construtorDeGrafico.mostrar()
     
