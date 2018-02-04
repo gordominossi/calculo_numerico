@@ -98,8 +98,8 @@ class Simulador:
             
     def __fi(self, tk, yk, h):
         #return self.__eulerModificado(tk, yk, h)
-        return self.__eulerModificado(tk, yk, h)
-        #return self.__eulerAprimorado(tk, yk, h)
+        #return self.__eulerModificado(tk, yk, h)
+        return self.__eulerAprimorado(tk, yk, h)
 
 
     def __euler(self, tk, yk, h):
@@ -113,7 +113,7 @@ class Simulador:
         
 
     def __yLinha(self, tk, yk):
-            return - math.sin(tk) + 2 * math.cos(tk) * math.sin(tk)
+        return (1/10) * yk
     
     def nomeArquivoDeSaida(self):
         return 'saida_' + str(self.m) + '.txt'
@@ -143,7 +143,7 @@ class GeradorDeSolucaoExata:
         f.closed
         
     def __calcularSolucaoExata(self, tk):
-        return math.cos(tk) + math.sin(tk)**2
+        return math.e ** ((1/10) * tk)
 #Fim da classe GERADORDESOLUCAOEXATA        
         
     
@@ -152,12 +152,17 @@ def main():
     sim_a = Simulador(1)
     sim_b = Simulador(2)
     sim_c = Simulador(3)
+    sim_d = Simulador(4)
+    sim_e = Simulador(5)
+    sim_f = Simulador(6)
+    sim_g = Simulador(7)
+    sim_h = Simulador(8)
     
     construtorDeGrafico = ConstrutorDeGrafico()   
     
     construtorDeGrafico.adicionar(sim_a.nomeArquivoDeSaida(), sim_a.m, '--')
-    #construtorDeGrafico.adicionar(sim_b.nomeArquivoDeSaida(), sim_b.m, '-.')
-#  construtorDeGrafico.adicionar(sim_c.nomeArquivoDeSaida(), sim_c.m, ':')
+    construtorDeGrafico.adicionar(sim_b.nomeArquivoDeSaida(), sim_b.m, '-.')
+#    construtorDeGrafico.adicionar(sim_c.nomeArquivoDeSaida(), sim_c.m, ':')
     
     GeradorDeSolucaoExata()    
     construtorDeGrafico.adicionarSolucaoExata()
