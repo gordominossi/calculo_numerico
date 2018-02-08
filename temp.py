@@ -113,7 +113,7 @@ class Simulador:
         
 
     def __yLinha(self, tk, yk):
-        return (1/10) * yk
+        return yk * math.cos(tk) + 2 * math.pi * math.cos(2 * math.pi * tk) * ( math.e ** math.sin(tk) )
     
     def nomeArquivoDeSaida(self):
         return 'saida_' + str(self.m) + '.txt'
@@ -143,7 +143,7 @@ class GeradorDeSolucaoExata:
         f.closed
         
     def __calcularSolucaoExata(self, tk):
-        return math.e ** ((1/10) * tk)
+        return ( math.e ** math.sin(tk) ) * math.sin(2 * math.pi * tk)
 #Fim da classe GERADORDESOLUCAOEXATA        
         
     
@@ -160,8 +160,8 @@ def main():
     
     construtorDeGrafico = ConstrutorDeGrafico()   
     
-    construtorDeGrafico.adicionar(sim_a.nomeArquivoDeSaida(), sim_a.m, '--')
-    construtorDeGrafico.adicionar(sim_b.nomeArquivoDeSaida(), sim_b.m, '-.')
+    construtorDeGrafico.adicionar(sim_c.nomeArquivoDeSaida(), sim_a.m, '--')
+    construtorDeGrafico.adicionar(sim_h.nomeArquivoDeSaida(), sim_b.m, '-.')
 #    construtorDeGrafico.adicionar(sim_c.nomeArquivoDeSaida(), sim_c.m, ':')
     
     GeradorDeSolucaoExata()    
