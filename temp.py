@@ -4,7 +4,7 @@
 Felipe Vasconcelos
 8993027
 
-Tarefa #01
+Tarefa #02
 
 Referencias: 
     - https://matplotlib.org/
@@ -30,7 +30,7 @@ class ConstrutorDeGrafico:
             T = [float(linha.split()[0]) for linha in linhas]
             Y = [float(linha.split()[1]) for linha in linhas]
         ff.close
-        self.__configurarEixo(self.eixo, 'Y X T', T, Y, tracejado, m, 'Y (admensional)')
+        self.__configurarEixo(self.eixo, 'Euler Aprimorado: Y X T', T, Y, tracejado, m, 'Y (admensional)')
         
         
     def __configurarEixo(self, eixo, titulo, T, valores, tracejado, m, rotulo_y):
@@ -77,12 +77,14 @@ class Simulador:
     def __metodoDePassoUnicoBidimensional(self):
         
         h = (self.tf - self.t0)/self.__calcularN()
-        
-        #Lista dos resultados com C.I. adicionada
-        T = [self.t0]
-        Y = [self.y0]
 
         with open(self.nomeArquivoDeSaida(), 'w+') as f:    
+            
+        #Lista dos resultados com C.I. adicionada
+            T = [self.t0]
+            Y = [self.y0]
+            f.write(str(self.t0) + ' ' + str(self.y0) + '\n')
+        
             for k in range(0, self.__calcularN()):
                 t_k1 = T[k] + h
                 y_k1 = Y[k] + h * self.__fi(T[k], Y[k], h)
@@ -97,7 +99,7 @@ class Simulador:
             
             
     def __fi(self, tk, yk, h):
-        #return self.__eulerModificado(tk, yk, h)
+        #return self.__euler(tk, yk, h)
         #return self.__eulerModificado(tk, yk, h)
         return self.__eulerAprimorado(tk, yk, h)
 
@@ -113,7 +115,7 @@ class Simulador:
         
 
     def __yLinha(self, tk, yk):
-        return yk * math.cos(tk) + 2 * math.pi * math.cos(2 * math.pi * tk) * ( math.e ** math.sin(tk) )
+        return yk - (5 * math.pi) * (math.e ** tk) * math.sin(5 * math.pi * tk) 
     
     def nomeArquivoDeSaida(self):
         return 'saida_' + str(self.m) + '.txt'
@@ -143,26 +145,26 @@ class GeradorDeSolucaoExata:
         f.closed
         
     def __calcularSolucaoExata(self, tk):
-        return ( math.e ** math.sin(tk) ) * math.sin(2 * math.pi * tk)
+        return ( math.e ** tk ) * math.cos(5 * math.pi * tk)
 #Fim da classe GERADORDESOLUCAOEXATA        
         
     
 def main():
     
     sim_a = Simulador(1)
-    sim_b = Simulador(2)
+    #sim_b = Simulador(2)
     sim_c = Simulador(3)
-    sim_d = Simulador(4)
-    sim_e = Simulador(5)
-    sim_f = Simulador(6)
-    sim_g = Simulador(7)
-    sim_h = Simulador(8)
+    #sim_d = Simulador(4)
+    #sim_e = Simulador(5)
+    #sim_f = Simulador(6)
+    #sim_g = Simulador(7)
+    #sim_h = Simulador(8)
     
     construtorDeGrafico = ConstrutorDeGrafico()   
     
-    construtorDeGrafico.adicionar(sim_c.nomeArquivoDeSaida(), sim_a.m, '--')
-    construtorDeGrafico.adicionar(sim_h.nomeArquivoDeSaida(), sim_b.m, '-.')
-#    construtorDeGrafico.adicionar(sim_c.nomeArquivoDeSaida(), sim_c.m, ':')
+    construtorDeGrafico.adicionar(sim_a.nomeArquivoDeSaida(), sim_a.m, ':')
+    construtorDeGrafico.adicionar(sim_c.nomeArquivoDeSaida(), sim_c.m, '-.')
+#    construtorDeGrafico.adicionar(sim_c.nomeArquivoDeSaida(), sim_c.m, '--')
     
     GeradorDeSolucaoExata()    
     construtorDeGrafico.adicionarSolucaoExata()
