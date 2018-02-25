@@ -65,7 +65,6 @@ class Simulador:
             self.tf = float(f.readline())
             self.y0 = float(f.readline())            
             self.n = int(f.readline())
-
         f.closed
         self.__simular()
         
@@ -75,50 +74,88 @@ class Simulador:
     
     
     def __metodoDePassoUnicoBidimensional(self):
-        
         h = (self.tf - self.t0)/self.__calcularN()
-
+        
         with open(self.nomeArquivoDeSaida(), 'w+') as f:    
-            
         #Lista dos resultados com C.I. adicionada
             T = [self.t0]
             Y = [self.y0]
             f.write(str(self.t0) + ' ' + str(self.y0) + '\n')
-        
+
+        #Metodos Explicitos
+#            for k in range(0, self.__calcularN()):
+#                t_k1 = T[k] + h
+#                y_k1 = Y[k] + h * self.__fi(T[k], t_k1, Y[k], h)
+#                T.append(t_k1)
+#                Y.append(y_k1)
+#                f.write(str(t_k1) + ' ' + str(y_k1) + '\n')
+
+        #Metodos Implicitos
             for k in range(0, self.__calcularN()):
                 t_k1 = T[k] + h
-                y_k1 = Y[k] + h * self.__fi(T[k], Y[k], h)
+                y_k1 = self.__eulerImplicito(T[k], t_k1, Y[k], h)
                 T.append(t_k1)
                 Y.append(y_k1)
                 f.write(str(t_k1) + ' ' + str(y_k1) + '\n')
         f.closed
             
-            
+        
     def __calcularN(self):
         return self.n*(2**self.m)
+
+    def nomeArquivoDeSaida(self):
+        return 'saida_' + str(self.m) + '.txt'            
             
-            
-    def __fi(self, tk, yk, h):
-        #return self.__euler(tk, yk, h)
-        #return self.__eulerModificado(tk, yk, h)
-        return self.__eulerAprimorado(tk, yk, h)
+#    def __fi(self, tk, tk1, yk, h):
+#        return self.__euler(tk, yk, h)
+#        return self.__eulerModificado(tk, yk, h)
+#        return self.__eulerAprimorado(tk, yk, h)
 
 
-    def __euler(self, tk, yk, h):
-        return self.__yLinha(tk, yk)
+    #Metodos Implicitos
+    def __eulerImplicito(self, tk, tk1, yk, h):
+        chuteInicial = 1
+        return self.__aproximarRaizPeloMetodoDeNewton(tk1, yk, chuteInicial, h)
+    
+    def __aproximarRaizPeloMetodoDeNewton(self, tk1, yk, chuteInicial, h):
+
+        x0 = chuteInicial
+        for k in range(0, 10):
+            x = self.__metodoDeNewton(tk1, yk, x0, h)
+            if(math.fabs(x - x0) < 0.0001):
+                return x
+            else:
+                x0 = x
         
-    def __eulerModificado(self, tk, yk, h):
-        return self.__yLinha(tk + h/2, yk + (h/2) * self.__yLinha(tk, yk))
+        print("O método falhou em encontrar a raiz com 10 iterações")
 
-    def __eulerAprimorado(self, tk, yk, h):
-        return (1/2) * (self.__yLinha(tk, yk) + self.__yLinha(tk + h, yk + h * self.__yLinha(tk, yk)))
+
+    def __metodoDeNewton(self, tk1, yk, yk1, h):
+        return yk1 - self.__fDeNewton(tk1, yk, yk1, h)/self.__fLinhaDeNewton(h)
+    
+    def __fDeNewton(self, tk1, yk, yk1, h):
+        return yk1 - yk - h * self.__yLinha(tk1, yk1)
         
+    def __fLinhaDeNewton(self, h):
+        return 1 - h
+    
+    
+    
+    #Metodos Explicitos
+#    def __euler(self, tk, yk, h):
+#        return self.__yLinha(tk, yk)
+#        
+#    def __eulerModificado(self, tk, yk, h):
+#        return self.__yLinha(tk + h/2, yk + (h/2) * self.__yLinha(tk, yk))
+#
+#    def __eulerAprimorado(self, tk, yk, h):
+#        return (1/2) * (self.__yLinha(tk, yk) + self.__yLinha(tk + h, yk + h * self.__yLinha(tk, yk)))
+        
+    
 
     def __yLinha(self, tk, yk):
         return yk - (5 * math.pi) * (math.e ** tk) * math.sin(5 * math.pi * tk) 
     
-    def nomeArquivoDeSaida(self):
-        return 'saida_' + str(self.m) + '.txt'
 #Fim da classe SIMULADOR
         
     
