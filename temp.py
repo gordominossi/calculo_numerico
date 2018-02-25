@@ -70,10 +70,10 @@ class Simulador:
         
         
     def __simular(self):
-        self.__metodoDePassoUnicoBidimensional()
+        self.__metodoDePassoUnico()
     
     
-    def __metodoDePassoUnicoBidimensional(self):
+    def __metodoDePassoUnico(self):
         h = (self.tf - self.t0)/self.__calcularN()
         
         with open(self.nomeArquivoDeSaida(), 'w+') as f:    
@@ -82,7 +82,7 @@ class Simulador:
             Y = [self.y0]
             f.write(str(self.t0) + ' ' + str(self.y0) + '\n')
 
-        #Metodos Explicitos
+        #Metodo Explicito
 #            for k in range(0, self.__calcularN()):
 #                t_k1 = T[k] + h
 #                y_k1 = Y[k] + h * self.__fi(T[k], t_k1, Y[k], h)
@@ -90,7 +90,7 @@ class Simulador:
 #                Y.append(y_k1)
 #                f.write(str(t_k1) + ' ' + str(y_k1) + '\n')
 
-        #Metodos Implicitos
+        #Metodo Implicito
             for k in range(0, self.__calcularN()):
                 t_k1 = T[k] + h
                 y_k1 = self.__eulerImplicito(T[k], t_k1, Y[k], h)
@@ -131,12 +131,12 @@ class Simulador:
 
 
     def __metodoDeNewton(self, tk1, yk, yk1, h):
-        return yk1 - self.__fDeNewton(tk1, yk, yk1, h)/self.__fLinhaDeNewton(h)
+        return yk1 - self.__fDeNewton(tk1, yk, yk1, h)/self.__fLinhaDoNewton(h)
     
     def __fDeNewton(self, tk1, yk, yk1, h):
         return yk1 - yk - h * self.__yLinha(tk1, yk1)
         
-    def __fLinhaDeNewton(self, h):
+    def __fLinhaDoNewton(self, h):
         return 1 - h
     
     
@@ -186,14 +186,16 @@ class GeradorDeSolucaoExata:
     
 def main():
     
-    #sim_a = Simulador(1)
-    #sim_b = Simulador(2)
+    sim_a = Simulador(1)
+    sim_b = Simulador(2)
     sim_c = Simulador(3)
-    #sim_d = Simulador(4)
-    #sim_e = Simulador(5)
+    sim_d = Simulador(4)
+    sim_e = Simulador(5)
     sim_f = Simulador(6)
-    #sim_g = Simulador(7)
-    #sim_h = Simulador(8)
+    sim_g = Simulador(7)
+    sim_h = Simulador(8)
+    sim_i = Simulador(9)
+    sim_j = Simulador(10)
     
     construtorDeGrafico = ConstrutorDeGrafico()   
     
