@@ -30,7 +30,7 @@ class ConstrutorDeGrafico:
             T = [float(linha.split()[0]) for linha in linhas]
             Y = [float(linha.split()[1]) for linha in linhas]
         ff.close
-        self.__configurarEixo(self.eixo, 'Euler Aprimorado: Y X T', T, Y, tracejado, m, 'Y (admensional)')
+        self.__configurarEixo(self.eixo, 'Euler Implícito: Y X T', T, Y, tracejado, m, 'Y (admensional)')
         
         
     def __configurarEixo(self, eixo, titulo, T, valores, tracejado, m, rotulo_y):
@@ -114,7 +114,7 @@ class Simulador:
 
     #Metodos Implicitos
     def __eulerImplicito(self, tk, tk1, yk, h):
-        chuteInicial = 1
+        chuteInicial = yk
         return self.__aproximarRaizPeloMetodoDeNewton(tk1, yk, chuteInicial, h)
     
     def __aproximarRaizPeloMetodoDeNewton(self, tk1, yk, chuteInicial, h):
@@ -140,7 +140,6 @@ class Simulador:
         return 1 - h
     
     
-    
     #Metodos Explicitos
 #    def __euler(self, tk, yk, h):
 #        return self.__yLinha(tk, yk)
@@ -150,7 +149,6 @@ class Simulador:
 #
 #    def __eulerAprimorado(self, tk, yk, h):
 #        return (1/2) * (self.__yLinha(tk, yk) + self.__yLinha(tk + h, yk + h * self.__yLinha(tk, yk)))
-        
     
 
     def __yLinha(self, tk, yk):
@@ -188,20 +186,19 @@ class GeradorDeSolucaoExata:
     
 def main():
     
-    sim_a = Simulador(1)
+    #sim_a = Simulador(1)
     #sim_b = Simulador(2)
     sim_c = Simulador(3)
     #sim_d = Simulador(4)
     #sim_e = Simulador(5)
-    #sim_f = Simulador(6)
+    sim_f = Simulador(6)
     #sim_g = Simulador(7)
     #sim_h = Simulador(8)
     
     construtorDeGrafico = ConstrutorDeGrafico()   
     
-    construtorDeGrafico.adicionar(sim_a.nomeArquivoDeSaida(), sim_a.m, ':')
-    construtorDeGrafico.adicionar(sim_c.nomeArquivoDeSaida(), sim_c.m, '-.')
-#    construtorDeGrafico.adicionar(sim_c.nomeArquivoDeSaida(), sim_c.m, '--')
+    construtorDeGrafico.adicionar(sim_c.nomeArquivoDeSaida(), sim_c.m, ':')
+    construtorDeGrafico.adicionar(sim_f.nomeArquivoDeSaida(), sim_f.m, '-.')
     
     GeradorDeSolucaoExata()    
     construtorDeGrafico.adicionarSolucaoExata()
