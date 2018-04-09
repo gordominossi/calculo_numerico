@@ -172,10 +172,10 @@ class GeradorDeSolucaoExata:
 
             for k in range(0, self.i+1):
                 t_k1 = t + h * k
-                y_k1 = self.__calcularSolucaoExata1(t_k1)
+#                y_k1 = self.__calcularSolucaoExata1(t_k1)
 #                y_k1 = self.__calcularSolucaoExata2(t_k1)
 #                y_k1 = self.__calcularSolucaoExata3(t_k1)
-#                y_k1 = self.__calcularSolucaoExata4(t_k1)
+                y_k1 = self.__calcularSolucaoExata4(t_k1)
 
                 f.write(str(t_k1) + ' ' + str(y_k1) + '\n')
         f.closed
