@@ -36,9 +36,9 @@ class ConstrutorDeGrafico:
         ff.close
         
         #TROCAR PARA IMPRIMIR UM GRAFICO POR VEZ. SINCRONIZAR COM SOLUCAO EXATA
-#        self.__configurarEixo(self.eixo, 'Y1 X T', T, Y1, tracejado, m, 'Y1 (admensional)')
+        self.__configurarEixo(self.eixo, 'Y1 X T', T, Y1, tracejado, m, 'Y1 (admensional)')
 #        self.__configurarEixo(self.eixo, 'Y2 X T', T, Y2, tracejado, m, 'Y2 (admensional)')
-        self.__configurarEixo(self.eixo, 'Y3 X T', T, Y3, tracejado, m, 'Y3 (admensional)')
+#        self.__configurarEixo(self.eixo, 'Y3 X T', T, Y3, tracejado, m, 'Y3 (admensional)')
 #        self.__configurarEixo(self.eixo, 'Y4 X T', T, Y4, tracejado, m, 'Y4 (admensional)')
 
     def __configurarEixo(self, eixo, titulo, T, valores, tracejado, m, rotulo_y):
@@ -142,16 +142,16 @@ class Simulador:
         return (k1 + 4 * k2 + k3)/6
     
     def __y1Linha(self, tk, y1_k, y2_k, y3_k, y4_k):
-        return 2 * y1_k
+        return 1 * y1_k
 
     def __y2Linha(self, tk, y1_k, y2_k, y3_k, y4_k):
-        return y2_k + 2 * y1_k
+        return 2 * y2_k
 
     def __y3Linha(self, tk, y1_k, y2_k, y3_k, y4_k):
-        return y3_k + y2_k + y1_k
+        return 3 * y3_k
     
     def __y4Linha(self, tk, y1_k, y2_k, y3_k, y4_k):
-        return y4_k + y3_k + y1_k
+        return 4 * y4_k
     
 #Fim da classe SIMULADOR
 
@@ -172,25 +172,25 @@ class GeradorDeSolucaoExata:
 
             for k in range(0, self.i+1):
                 t_k1 = t + h * k
-#                y_k1 = self.__calcularSolucaoExata1(t_k1)
+                y_k1 = self.__calcularSolucaoExata1(t_k1)
 #                y_k1 = self.__calcularSolucaoExata2(t_k1)
-                y_k1 = self.__calcularSolucaoExata3(t_k1)
+#                y_k1 = self.__calcularSolucaoExata3(t_k1)
 #                y_k1 = self.__calcularSolucaoExata4(t_k1)
 
                 f.write(str(t_k1) + ' ' + str(y_k1) + '\n')
         f.closed
 
     def __calcularSolucaoExata1(self, tk):
-        return ( math.e ** (2*tk) )
+        return ( math.e ** (1*tk) )
 
     def __calcularSolucaoExata2(self, tk):
-        return 2 * ( math.e ** (2*tk) )
+        return ( math.e ** (2*tk) )
 
     def __calcularSolucaoExata3(self, tk):
-        return 3 * ( math.e ** (2*tk) )
+        return ( math.e ** (3*tk) )
 
     def __calcularSolucaoExata4(self, tk):
-        return 4 * ( math.e ** (2*tk) )
+        return ( math.e ** (4*tk) )
     
 #Fim da classe GERADORDESOLUCAOEXATA
 
