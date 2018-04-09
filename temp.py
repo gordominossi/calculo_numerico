@@ -23,6 +23,7 @@ class ConstrutorDeGrafico:
     def __init__(self):
         self.fig = plt.figure()
         self.gs = gridspec.GridSpec(1, 1)
+#        self.eixo = self.fig.add_subplot(self.gs[0])
         self.eixo = self.fig.add_subplot(self.gs[0], projection='3d')
 
 
@@ -282,7 +283,7 @@ def main():
 
     construtorDeGrafico = ConstrutorDeGrafico()
 
-    construtorDeGrafico.adicionar(sim_c.nomeArquivoDeSaida(), sim_c.m, ':')
+    construtorDeGrafico.adicionar(sim_d.nomeArquivoDeSaida(), sim_d.m, ':')
     construtorDeGrafico.adicionar(sim_j.nomeArquivoDeSaida(), sim_j.m, '-.')
 
 #    GeradorDeSolucaoExata()
