@@ -4,11 +4,12 @@
 Felipe Vasconcelos
 8993027
 
-Tarefa #02
+Tarefa #10
 
 Referencias:
     - https://matplotlib.org/
     - https://docs.python.org/3/
+    - https://rosettacode.org/wiki/Runge-Kutta_method#Alternate_solution
 """
 
 import matplotlib.gridspec as gridspec
@@ -28,10 +29,17 @@ class ConstrutorDeGrafico:
         with open(arquivo) as ff:
             linhas = ff.readlines()
             T = [float(linha.split()[0]) for linha in linhas]
-            Y = [float(linha.split()[1]) for linha in linhas]
+            Y1 = [float(linha.split()[1]) for linha in linhas]
+            Y2 = [float(linha.split()[2]) for linha in linhas]
+            Y3 = [float(linha.split()[3]) for linha in linhas]
+            Y4 = [float(linha.split()[4]) for linha in linhas]
         ff.close
-        self.__configurarEixo(self.eixo, 'Euler Implícito: Y X T', T, Y, tracejado, m, 'Y (admensional)')
-
+        
+        #TROCAR PARA IMPRIMIR UM GRAFICO POR VEZ. SINCRONIZAR COM SOLUCAO EXATA
+#        self.__configurarEixo(self.eixo, 'Y1 X T', T, Y1, tracejado, m, 'Y1 (admensional)')
+#        self.__configurarEixo(self.eixo, 'Y2 X T', T, Y2, tracejado, m, 'Y2 (admensional)')
+#        self.__configurarEixo(self.eixo, 'Y3 X T', T, Y3, tracejado, m, 'Y3 (admensional)')
+        self.__configurarEixo(self.eixo, 'Y4 X T', T, Y4, tracejado, m, 'Y4 (admensional)')
 
     def __configurarEixo(self, eixo, titulo, T, valores, tracejado, m, rotulo_y):
         eixo.set_title(titulo)
@@ -63,7 +71,10 @@ class Simulador:
         with open('parametros_iniciais.txt') as f:
             self.t0 = float(f.readline())
             self.tf = float(f.readline())
-            self.y0 = float(f.readline())
+            self.y1_0 = float(f.readline())
+            self.y2_0 = float(f.readline())
+            self.y3_0 = float(f.readline())
+            self.y4_0 = float(f.readline())
             self.n = int(f.readline())
         f.closed
         self.__simular()
@@ -79,26 +90,36 @@ class Simulador:
         with open(self.nomeArquivoDeSaida(), 'w+') as f:
         #Lista dos resultados com C.I. adicionada
             T = [self.t0]
-            Y = [self.y0]
-            f.write(str(self.t0) + ' ' + str(self.y0) + '\n')
+            Y1 = [self.y1_0]
+            Y2 = [self.y2_0]
+            Y3 = [self.y3_0]
+            Y4 = [self.y4_0]
+            f.write(str(self.t0) + ' ' + str(self.y1_0) + ' ' + str(self.y2_0) + ' ' + str(self.y3_0) + ' ' + str(self.y4_0) +   '\n')
 
         #Metodo Explicito
-            for k in range(0, self.__calcularN()):
-               t_k1 = T[k] + h
-               y_k1 = Y[k] + h * self.__fi(T[k], t_k1, Y[k], h)
+            for i in range(0, self.__calcularN()):
+               tk = T[i]
+               t_k1 = tk + h
                T.append(t_k1)
-               Y.append(y_k1)
-               f.write(str(t_k1) + ' ' + str(y_k1) + '\n')
 
-        #Metodo Implicito
-            # for k in range(0, self.__calcularN()):
-            #     t_k1 = T[k] + h
-            #     y_k1 = self.__eulerImplicito(T[k], t_k1, Y[k], h)
-            #     T.append(t_k1)
-            #     Y.append(y_k1)
-            #     f.write(str(t_k1) + ' ' + str(y_k1) + '\n')
+               y1_k = Y1[i] 
+               y2_k = Y2[i] 
+               y3_k = Y3[i] 
+               y4_k = Y4[i] 
+               
+               y1_k1 = y1_k + h * self.__fi(self.__y1Linha, tk, h, y1_k, y2_k, y3_k, y4_k)
+               y2_k1 = y2_k + h * self.__fi(self.__y2Linha, tk, h, y1_k, y2_k, y3_k, y4_k)
+               y3_k1 = y3_k + h * self.__fi(self.__y3Linha, tk, h, y1_k, y2_k, y3_k, y4_k)
+               y4_k1 = y4_k + h * self.__fi(self.__y4Linha, tk, h, y1_k, y2_k, y3_k, y4_k)
+               
+               Y1.append(y1_k1)
+               Y2.append(y2_k1)
+               Y3.append(y3_k1)
+               Y4.append(y4_k1)
+               
+               f.write(str(t_k1) + ' ' + str(y1_k1) + ' ' + str(y2_k1) + ' ' + str(y3_k1) + ' ' + str(y4_k1) + '\n')
+              
         f.closed
-
 
     def __calcularN(self):
         return self.n*(2**self.m)
@@ -106,55 +127,32 @@ class Simulador:
     def nomeArquivoDeSaida(self):
         return 'saida_' + str(self.m) + '.txt'
 
-    def __fi(self, tk, tk1, yk, h):
-        return self.__euler(tk, yk, h)
-        return self.__eulerModificado(tk, yk, h)
-        return self.__eulerAprimorado(tk, yk, h)
+    def __fi(self, ylinha, tk, h, y1_k, y2_k, y3_k, y4_k):
+        return self.__rungeKuttaTerceiraOrdem(ylinha, tk, h, y1_k, y2_k, y3_k, y4_k)
 
+    def __rungeKuttaTerceiraOrdem(self, ylinha, tk, h, y1_k, y2_k, y3_k, y4_k):
+        k1 = ylinha(tk, y1_k, y2_k, y3_k, y4_k)
+        
+        k2_fator = (h*0.5*k1)
+        k2 = ylinha(tk + 0.5 * h, y1_k + k2_fator, y2_k + k2_fator, y3_k + k2_fator, y4_k + k2_fator)
+        
+        k3_fator = (h*k1) + (2*h*k2)
+        k3 = ylinha(tk + h, y1_k - k3_fator, y2_k - k3_fator, y3_k - k3_fator, y4_k - k3_fator)
+        
+        return (k1 + 4 * k2 + k3)/6
+    
+    def __y1Linha(self, tk, y1_k, y2_k, y3_k, y4_k):
+        return 2 * y1_k
 
-    #Metodos Implicitos
-#    def __eulerImplicito(self, tk, tk1, yk, h):
-#        chuteInicial = yk
-#        return self.__aproximarRaizPeloMetodoDeNewton(tk1, yk, chuteInicial, h)
-#
-#    def __aproximarRaizPeloMetodoDeNewton(self, tk1, yk, chuteInicial, h):
-#
-#        x0 = chuteInicial
-#        for k in range(0, 10):
-#            x = self.__metodoDeNewton(tk1, yk, x0, h)
-#            if(math.fabs(x - x0) < 0.0001):
-#                return x
-#            else:
-#                x0 = x
-#
-#        print("O método falhou em encontrar a raiz com 10 iterações")
-#
-#
-#    def __metodoDeNewton(self, tk1, yk, yk1, h):
-#        return yk1 - self.__fDeNewton(tk1, yk, yk1, h)/self.__fLinhaDoNewton(h)
-#
-#    def __fDeNewton(self, tk1, yk, yk1, h):
-#        return yk1 - yk - h * self.__yLinha(tk1, yk1)
-#
-#    def __fLinhaDoNewton(self, h):
-#        return 1 - h
+    def __y2Linha(self, tk, y1_k, y2_k, y3_k, y4_k):
+        return y2_k + 2 * y1_k
 
-
-    #Metodos Explicitos
-    def __euler(self, tk, yk, h):
-        return self.__yLinha(tk, yk)
-
-    def __eulerModificado(self, tk, yk, h):
-        return self.__yLinha(tk + h/2, yk + (h/2) * self.__yLinha(tk, yk))
-
-    def __eulerAprimorado(self, tk, yk, h):
-        return (1/2) * (self.__yLinha(tk, yk) + self.__yLinha(tk + h, yk + h * self.__yLinha(tk, yk)))
-
-
-
-    def __yLinha(self, tk, yk):
-        return yk - (5 * math.pi) * (math.e ** tk) * math.sin(5 * math.pi * tk)
-
+    def __y3Linha(self, tk, y1_k, y2_k, y3_k, y4_k):
+        return y3_k + y2_k + y1_k
+    
+    def __y4Linha(self, tk, y1_k, y2_k, y3_k, y4_k):
+        return y4_k + y3_k + y1_k
+    
 #Fim da classe SIMULADOR
 
 
@@ -165,7 +163,6 @@ class GeradorDeSolucaoExata:
         with open('parametros_iniciais.txt') as f:
             self.t0 = float(f.readline())
             self.tf = float(f.readline())
-            self.y0 = float(f.readline())
             self.i = 2**10
         f.closed
 
@@ -175,13 +172,26 @@ class GeradorDeSolucaoExata:
 
             for k in range(0, self.i+1):
                 t_k1 = t + h * k
-                y_k1 = self.__calcularSolucaoExata(t_k1)
-                print(y_k1)
+#                y_k1 = self.__calcularSolucaoExata1(t_k1)
+#                y_k1 = self.__calcularSolucaoExata2(t_k1)
+#                y_k1 = self.__calcularSolucaoExata3(t_k1)
+                y_k1 = self.__calcularSolucaoExata4(t_k1)
+
                 f.write(str(t_k1) + ' ' + str(y_k1) + '\n')
         f.closed
 
-    def __calcularSolucaoExata(self, tk):
-        return ( math.e ** tk ) * math.cos(5 * math.pi * tk)
+    def __calcularSolucaoExata1(self, tk):
+        return ( math.e ** (2*tk) )
+
+    def __calcularSolucaoExata2(self, tk):
+        return 2 * ( math.e ** (2*tk) )
+
+    def __calcularSolucaoExata3(self, tk):
+        return 3 * ( math.e ** (2*tk) )
+
+    def __calcularSolucaoExata4(self, tk):
+        return 4 * ( math.e ** (2*tk) )
+    
 #Fim da classe GERADORDESOLUCAOEXATA
 
 
@@ -200,8 +210,8 @@ def main():
 
     construtorDeGrafico = ConstrutorDeGrafico()
 
-    construtorDeGrafico.adicionar(sim_c.nomeArquivoDeSaida(), sim_c.m, ':')
-    construtorDeGrafico.adicionar(sim_f.nomeArquivoDeSaida(), sim_f.m, '-.')
+    construtorDeGrafico.adicionar(sim_a.nomeArquivoDeSaida(), sim_a.m, ':')
+    construtorDeGrafico.adicionar(sim_c.nomeArquivoDeSaida(), sim_c.m, '-.')
 
     GeradorDeSolucaoExata()
     construtorDeGrafico.adicionarSolucaoExata()
