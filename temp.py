@@ -36,9 +36,9 @@ class ConstrutorDeGrafico:
         ff.close
         
         #TROCAR PARA IMPRIMIR UM GRAFICO POR VEZ. SINCRONIZAR COM SOLUCAO EXATA
-        self.__configurarEixo(self.eixo, 'Y1 X T', T, Y1, tracejado, m, 'Y1 (admensional)')
+#        self.__configurarEixo(self.eixo, 'Y1 X T', T, Y1, tracejado, m, 'Y1 (admensional)')
 #        self.__configurarEixo(self.eixo, 'Y2 X T', T, Y2, tracejado, m, 'Y2 (admensional)')
-#        self.__configurarEixo(self.eixo, 'Y3 X T', T, Y3, tracejado, m, 'Y3 (admensional)')
+        self.__configurarEixo(self.eixo, 'Y3 X T', T, Y3, tracejado, m, 'Y3 (admensional)')
 #        self.__configurarEixo(self.eixo, 'Y4 X T', T, Y4, tracejado, m, 'Y4 (admensional)')
 
     def __configurarEixo(self, eixo, titulo, T, valores, tracejado, m, rotulo_y):
@@ -133,11 +133,11 @@ class Simulador:
     def __rungeKuttaTerceiraOrdem(self, ylinha, tk, h, y1_k, y2_k, y3_k, y4_k):
         k1 = h * ylinha(tk, y1_k, y2_k, y3_k, y4_k)
         
-        k2_fator = (0.5*k1)
-        k2 = h * ylinha(tk + 0.5 * h, y1_k + k2_fator, y2_k + k2_fator, y3_k + k2_fator, y4_k + k2_fator)
+        k2_fator = (k1/2)
+        k2 = h * ylinha(tk + h/2, y1_k + k2_fator, y2_k + k2_fator, y3_k + k2_fator, y4_k + k2_fator)
         
-        k3_fator = k1 + (2*k2)
-        k3 = h * ylinha(tk + h, y1_k - k3_fator, y2_k - k3_fator, y3_k - k3_fator, y4_k - k3_fator)
+        k3_fator = - k1 + (2*k2)
+        k3 = h * ylinha(tk + h, y1_k + k3_fator, y2_k + k3_fator, y3_k + k3_fator, y4_k + k3_fator)
         
         return (k1 + 4 * k2 + k3)/6
     
@@ -172,9 +172,9 @@ class GeradorDeSolucaoExata:
 
             for k in range(0, self.i+1):
                 t_k1 = t + h * k
-                y_k1 = self.__calcularSolucaoExata1(t_k1)
+#                y_k1 = self.__calcularSolucaoExata1(t_k1)
 #                y_k1 = self.__calcularSolucaoExata2(t_k1)
-#                y_k1 = self.__calcularSolucaoExata3(t_k1)
+                y_k1 = self.__calcularSolucaoExata3(t_k1)
 #                y_k1 = self.__calcularSolucaoExata4(t_k1)
 
                 f.write(str(t_k1) + ' ' + str(y_k1) + '\n')
