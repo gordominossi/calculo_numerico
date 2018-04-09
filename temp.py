@@ -14,6 +14,7 @@ Referencias:
 
 import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 import math
 
 #Classe CONSTRUTORDEGRAFICO
@@ -22,7 +23,7 @@ class ConstrutorDeGrafico:
     def __init__(self):
         self.fig = plt.figure()
         self.gs = gridspec.GridSpec(1, 1)
-        self.eixo = self.fig.add_subplot(self.gs[0])
+        self.eixo = self.fig.add_subplot(self.gs[0], projection='3d')
 
 
     def adicionar(self, arquivo, m, tracejado):
@@ -39,12 +40,23 @@ class ConstrutorDeGrafico:
 #  computadores vacinados não-infectados
         
         #TROCAR PARA IMPRIMIR UM GRAFICO POR VEZ. SINCRONIZAR COM SOLUCAO EXATA
-#        self.__configurarEixo(self.eixo, 'S X T', T, Y1, tracejado, m, 'S (Qtd de computadores suscetíveis não-infectados)')
-#        self.__configurarEixo(self.eixo, 'I X T', T, Y2, tracejado, m, 'I (Qtd de computadores infectados)')
-#        self.__configurarEixo(self.eixo, 'R X T', T, Y3, tracejado, m, 'R (Qtd de computadores removidos)')
-        self.__configurarEixo(self.eixo, 'A X T', T, Y4, tracejado, m, 'Y4 (Qtd de computadores vacinados não-infectados)')
+#        self.__configurarEixo2D(self.eixo, 'S X T', T, Y1, tracejado, m, 'S (Qtd de computadores suscetíveis não-infectados)')
+#        self.__configurarEixo2D(self.eixo, 'I X T', T, Y2, tracejado, m, 'I (Qtd de computadores infectados)')
+#        self.__configurarEixo2D(self.eixo, 'R X T', T, Y3, tracejado, m, 'R (Qtd de computadores removidos)')
+#        self.__configurarEixo2D(self.eixo, 'A X T', T, Y4, tracejado, m, 'Y4 (Qtd de computadores vacinados não-infectados)')
+        
+        self.__configurarEixo3D(self.eixo, 'S x I x R', Y1, Y2, Y3, tracejado, m)
 
-    def __configurarEixo(self, eixo, titulo, T, valores, tracejado, m, rotulo_y):
+
+    def __configurarEixo3D(self, eixo, titulo, S, I, R, tracejado, m):
+        eixo.set_title(titulo)
+        eixo.plot(I, S, R, tracejado, label='m = ' + str(m), color="black")
+        eixo.set_xlabel('I (Qtd de computadores infectados)')
+        eixo.set_ylabel('S (Qtd de computadores suscetíveis não-infectados)')
+        eixo.set_zlabel('R (Qtd de computadores removidos)')
+        eixo.legend()
+        
+    def __configurarEixo2D(self, eixo, titulo, T, valores, tracejado, m, rotulo_y):
         eixo.set_title(titulo)
         eixo.plot(T, valores, tracejado, label='m = ' + str(m), color="black")
         eixo.set_ylabel(rotulo_y)
