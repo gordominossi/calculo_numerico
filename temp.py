@@ -133,13 +133,13 @@ class Simulador:
     def __rungeKuttaTerceiraOrdem(self, ylinha, tk, h, y1_k, y2_k, y3_k, y4_k):
         k1 = h * ylinha(tk, y1_k, y2_k, y3_k, y4_k)
         
-        k2_fator = (0.5*k1)
-        k2 = h * ylinha(tk + 0.5 * h, y1_k + k2_fator, y2_k + k2_fator, y3_k + k2_fator, y4_k + k2_fator)
+        k2_fator = (k1/3)
+        k2 = h * ylinha(tk + h/3, y1_k + k2_fator, y2_k + k2_fator, y3_k + k2_fator, y4_k + k2_fator)
         
-        k3_fator = k1 + (2*k2)
-        k3 = h * ylinha(tk + h, y1_k - k3_fator, y2_k - k3_fator, y3_k - k3_fator, y4_k - k3_fator)
+        k3_fator = (2*k2/3)
+        k3 = h * ylinha(tk + h, y1_k + k3_fator, y2_k + k3_fator, y3_k + k3_fator, y4_k + k3_fator)
         
-        return (k1 + 4 * k2 + k3)/6
+        return (k1 + 3 * k3)/4
     
     def __y1Linha(self, tk, y1_k, y2_k, y3_k, y4_k):
         return 2 * y1_k
