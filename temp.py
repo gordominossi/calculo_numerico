@@ -36,10 +36,10 @@ class ConstrutorDeGrafico:
         ff.close
         
         #TROCAR PARA IMPRIMIR UM GRAFICO POR VEZ. SINCRONIZAR COM SOLUCAO EXATA
-#        self.__configurarEixo(self.eixo, 'Y1 X T', T, Y1, tracejado, m, 'Y1 (admensional)')
+        self.__configurarEixo(self.eixo, 'Y1 X T', T, Y1, tracejado, m, 'Y1 (admensional)')
 #        self.__configurarEixo(self.eixo, 'Y2 X T', T, Y2, tracejado, m, 'Y2 (admensional)')
 #        self.__configurarEixo(self.eixo, 'Y3 X T', T, Y3, tracejado, m, 'Y3 (admensional)')
-        self.__configurarEixo(self.eixo, 'Y4 X T', T, Y4, tracejado, m, 'Y4 (admensional)')
+#        self.__configurarEixo(self.eixo, 'Y4 X T', T, Y4, tracejado, m, 'Y4 (admensional)')
 
     def __configurarEixo(self, eixo, titulo, T, valores, tracejado, m, rotulo_y):
         eixo.set_title(titulo)
@@ -107,10 +107,10 @@ class Simulador:
                y3_k = Y3[i] 
                y4_k = Y4[i] 
                
-               y1_k1 = y1_k + h * self.__fi(self.__y1Linha, tk, h, y1_k, y2_k, y3_k, y4_k)
-               y2_k1 = y2_k + h * self.__fi(self.__y2Linha, tk, h, y1_k, y2_k, y3_k, y4_k)
-               y3_k1 = y3_k + h * self.__fi(self.__y3Linha, tk, h, y1_k, y2_k, y3_k, y4_k)
-               y4_k1 = y4_k + h * self.__fi(self.__y4Linha, tk, h, y1_k, y2_k, y3_k, y4_k)
+               y1_k1 = y1_k + self.__fi(self.__y1Linha, tk, h, y1_k, y2_k, y3_k, y4_k)
+               y2_k1 = y2_k + self.__fi(self.__y2Linha, tk, h, y1_k, y2_k, y3_k, y4_k)
+               y3_k1 = y3_k + self.__fi(self.__y3Linha, tk, h, y1_k, y2_k, y3_k, y4_k)
+               y4_k1 = y4_k + self.__fi(self.__y4Linha, tk, h, y1_k, y2_k, y3_k, y4_k)
                
                Y1.append(y1_k1)
                Y2.append(y2_k1)
@@ -131,13 +131,13 @@ class Simulador:
         return self.__rungeKuttaTerceiraOrdem(ylinha, tk, h, y1_k, y2_k, y3_k, y4_k)
 
     def __rungeKuttaTerceiraOrdem(self, ylinha, tk, h, y1_k, y2_k, y3_k, y4_k):
-        k1 = ylinha(tk, y1_k, y2_k, y3_k, y4_k)
+        k1 = h * ylinha(tk, y1_k, y2_k, y3_k, y4_k)
         
-        k2_fator = (h*0.5*k1)
-        k2 = ylinha(tk + 0.5 * h, y1_k + k2_fator, y2_k + k2_fator, y3_k + k2_fator, y4_k + k2_fator)
+        k2_fator = (0.5*k1)
+        k2 = h * ylinha(tk + 0.5 * h, y1_k + k2_fator, y2_k + k2_fator, y3_k + k2_fator, y4_k + k2_fator)
         
-        k3_fator = (h*k1) + (2*h*k2)
-        k3 = ylinha(tk + h, y1_k - k3_fator, y2_k - k3_fator, y3_k - k3_fator, y4_k - k3_fator)
+        k3_fator = k1 + (2*k2)
+        k3 = h * ylinha(tk + h, y1_k - k3_fator, y2_k - k3_fator, y3_k - k3_fator, y4_k - k3_fator)
         
         return (k1 + 4 * k2 + k3)/6
     
@@ -172,10 +172,10 @@ class GeradorDeSolucaoExata:
 
             for k in range(0, self.i+1):
                 t_k1 = t + h * k
-#                y_k1 = self.__calcularSolucaoExata1(t_k1)
+                y_k1 = self.__calcularSolucaoExata1(t_k1)
 #                y_k1 = self.__calcularSolucaoExata2(t_k1)
 #                y_k1 = self.__calcularSolucaoExata3(t_k1)
-                y_k1 = self.__calcularSolucaoExata4(t_k1)
+#                y_k1 = self.__calcularSolucaoExata4(t_k1)
 
                 f.write(str(t_k1) + ' ' + str(y_k1) + '\n')
         f.closed
