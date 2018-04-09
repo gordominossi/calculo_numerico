@@ -35,17 +35,20 @@ class ConstrutorDeGrafico:
             Y4 = [float(linha.split()[4]) for linha in linhas] #A
         ff.close
         
+#População de computadores removidos
+#  computadores vacinados não-infectados
+        
         #TROCAR PARA IMPRIMIR UM GRAFICO POR VEZ. SINCRONIZAR COM SOLUCAO EXATA
-        self.__configurarEixo(self.eixo, 'Y1 X T', T, Y1, tracejado, m, 'Y1 (admensional)')
-#        self.__configurarEixo(self.eixo, 'Y2 X T', T, Y2, tracejado, m, 'Y2 (admensional)')
-#        self.__configurarEixo(self.eixo, 'Y3 X T', T, Y3, tracejado, m, 'Y3 (admensional)')
-#        self.__configurarEixo(self.eixo, 'Y4 X T', T, Y4, tracejado, m, 'Y4 (admensional)')
+#        self.__configurarEixo(self.eixo, 'S X T', T, Y1, tracejado, m, 'S (Qtd de computadores suscetíveis não-infectados)')
+#        self.__configurarEixo(self.eixo, 'I X T', T, Y2, tracejado, m, 'I (Qtd de computadores infectados)')
+#        self.__configurarEixo(self.eixo, 'R X T', T, Y3, tracejado, m, 'R (Qtd de computadores removidos)')
+        self.__configurarEixo(self.eixo, 'A X T', T, Y4, tracejado, m, 'Y4 (Qtd de computadores vacinados não-infectados)')
 
     def __configurarEixo(self, eixo, titulo, T, valores, tracejado, m, rotulo_y):
         eixo.set_title(titulo)
         eixo.plot(T, valores, tracejado, label='m = ' + str(m), color="black")
         eixo.set_ylabel(rotulo_y)
-        eixo.set_xlabel('T (admensional)')
+        eixo.set_xlabel('T (unidades de tempo)')
         eixo.legend()
 
     def adicionarSolucaoExata(self):
@@ -71,20 +74,21 @@ class Simulador:
         with open('parametros_iniciais.txt') as f:
             self.t0 = float(f.readline())
             self.tf = float(f.readline())
+            self.n = int(f.readline())
+
             self.y1_0 = float(f.readline()) #S
             self.y2_0 = float(f.readline()) #I
             self.y3_0 = float(f.readline()) #R
             self.y4_0 = float(f.readline()) #A
-            self.n = int(f.readline())
             
-#            self.npc = int(f.readline()) #novos comp. adicionados
-#            self.tm = int(f.readline()) #taxa de mortalidade
-#            self.isi = int(f.readline()) #int. suscept. infect.
-#            self.isv = int(f.readline()) #int. suscept. vac.
-#            self.iiv = int(f.readline()) #int. infec. vac.
-#            self.cpc = int(f.readline()) #comp. consertados
-#            self.crm = int(f.readline()) #comp. removidos
-#            
+            self.npc = float(f.readline()) #novos comp. adicionados
+            self.tm = float(f.readline()) #taxa de mortalidade
+            self.isi = float(f.readline()) #int. suscept. infect.
+            self.isv = float(f.readline()) #int. suscept. vac.
+            self.iiv = float(f.readline()) #int. infec. vac.
+            self.cpc = float(f.readline()) #comp. consertados
+            self.crm = float(f.readline()) #comp. removidos
+            
         f.closed
         self.__simular()
 
@@ -196,17 +200,18 @@ class Simulador:
 #        
 #        return (k1 + 4 * k2 + k3)/6
     
-    def __y1Linha(self, tk, y1_k, y2_k, y3_k, y4_k):
-        return 1 * y1_k
+
+    def __y1Linha(self, tk, y1_k, y2_k, y3_k, y4_k, ):
+        return self.npc - (self.isv*y1_k*y4_k) - (self.isi*y1_k*y2_k) - (self.tm*y1_k) + (self.cpc*y3_k)
 
     def __y2Linha(self, tk, y1_k, y2_k, y3_k, y4_k):
-        return 2 * y2_k
+        return (self.isi*y1_k*y2_k) - (self.iiv*y4_k*y2_k) - (self.crm*y2_k)
 
     def __y3Linha(self, tk, y1_k, y2_k, y3_k, y4_k):
-        return 3 * y3_k
+        return (self.crm*y2_k) - (self.cpc*y3_k)
     
     def __y4Linha(self, tk, y1_k, y2_k, y3_k, y4_k):
-        return 4 * y4_k
+        return (self.isv*y1_k*y4_k) + (self.iiv*y4_k*y2_k)
     
 #Fim da classe SIMULADOR
 
@@ -227,7 +232,7 @@ class GeradorDeSolucaoExata:
 
             for k in range(0, self.i+1):
                 t_k1 = t + h * k
-                y_k1 = self.__calcularSolucaoExata1(t_k1) #S
+#                y_k1 = self.__calcularSolucaoExata1(t_k1) #S
 #                y_k1 = self.__calcularSolucaoExata2(t_k1) #I
 #                y_k1 = self.__calcularSolucaoExata3(t_k1) #R
 #                y_k1 = self.__calcularSolucaoExata4(t_k1) #A
@@ -265,11 +270,11 @@ def main():
 
     construtorDeGrafico = ConstrutorDeGrafico()
 
-    construtorDeGrafico.adicionar(sim_a.nomeArquivoDeSaida(), sim_a.m, ':')
-    construtorDeGrafico.adicionar(sim_c.nomeArquivoDeSaida(), sim_c.m, '-.')
+    construtorDeGrafico.adicionar(sim_c.nomeArquivoDeSaida(), sim_c.m, ':')
+    construtorDeGrafico.adicionar(sim_j.nomeArquivoDeSaida(), sim_j.m, '-.')
 
-    GeradorDeSolucaoExata()
-    construtorDeGrafico.adicionarSolucaoExata()
+#    GeradorDeSolucaoExata()
+#    construtorDeGrafico.adicionarSolucaoExata()
 
     construtorDeGrafico.mostrar()
 
