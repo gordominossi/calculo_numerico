@@ -59,10 +59,10 @@ class ConstrutorDeGrafico:
 #  computadores vacinados não-infectados
         
         #TROCAR PARA IMPRIMIR UM GRAFICO POR VEZ. SINCRONIZAR COM SOLUCAO EXATA
-        self.__configurarEixo2D(self.eixo1, 'S X T - Sem ponto de equilíbrio endêmico', T, Y1, tracejado, m, 'S (Qtd de computadores suscetíveis não-infectados)')
-        self.__configurarEixo2D(self.eixo2, 'I X T - Sem ponto de equilíbrio endêmico', T, Y2, tracejado, m, 'I (Qtd de computadores infectados)')
-        self.__configurarEixo2D(self.eixo3, 'R X T - Sem ponto de equilíbrio endêmico', T, Y3, tracejado, m, 'R (Qtd de computadores removidos)')
-        self.__configurarEixo2D(self.eixo4, 'A X T - Sem ponto de equilíbrio endêmico', T, Y4, tracejado, m, 'Y4 (Qtd de computadores vacinados não-infectados)')
+        self.__configurarEixo2D(self.eixo1, 'S X T - Com ponto de equilíbrio endêmico', T, Y1, tracejado, m, 'S (Qtd de computadores suscetíveis não-infectados)')
+        self.__configurarEixo2D(self.eixo2, 'I X T - Com ponto de equilíbrio endêmico', T, Y2, tracejado, m, 'I (Qtd de computadores infectados)')
+        self.__configurarEixo2D(self.eixo3, 'R X T - Com ponto de equilíbrio endêmico', T, Y3, tracejado, m, 'R (Qtd de computadores removidos)')
+        self.__configurarEixo2D(self.eixo4, 'A X T - Com ponto de equilíbrio endêmico', T, Y4, tracejado, m, 'Y4 (Qtd de computadores vacinados não-infectados)')
         self.__configurarEixo3D(self.eixo5, 'S x I x R', Y1, Y2, Y3, tracejado, m)        
 
 
