@@ -21,11 +21,29 @@ import math
 class ConstrutorDeGrafico:
 
     def __init__(self):
-        self.fig = plt.figure()
+        self.fig1 = plt.figure()
+        self.fig2 = plt.figure()
+        self.fig3 = plt.figure()
+        self.fig4 = plt.figure()
+        self.fig5 = plt.figure()
+        
         self.gs = gridspec.GridSpec(1, 1)
-#        self.eixo = self.fig.add_subplot(self.gs[0])
-        self.eixo = self.fig.add_subplot(self.gs[0], projection='3d')
+        self.eixo1 = self.fig1.add_subplot(self.gs[0])
+        self.eixo2 = self.fig2.add_subplot(self.gs[0])
+        self.eixo3 = self.fig3.add_subplot(self.gs[0])
+        self.eixo4 = self.fig4.add_subplot(self.gs[0])
+        self.eixo5 = self.fig5.add_subplot(self.gs[0], projection='3d')
 
+
+
+#plt.plot(range(10))
+#
+#plt.figure()
+#plt.plot(range(10), 'ro-')
+#
+#plt.figure(), plt.plot(...)
+#
+#plt.show()
 
     def adicionar(self, arquivo, m, tracejado):
         with open(arquivo) as ff:
@@ -41,12 +59,11 @@ class ConstrutorDeGrafico:
 #  computadores vacinados não-infectados
         
         #TROCAR PARA IMPRIMIR UM GRAFICO POR VEZ. SINCRONIZAR COM SOLUCAO EXATA
-#        self.__configurarEixo2D(self.eixo, 'S X T', T, Y1, tracejado, m, 'S (Qtd de computadores suscetíveis não-infectados)')
-#        self.__configurarEixo2D(self.eixo, 'I X T', T, Y2, tracejado, m, 'I (Qtd de computadores infectados)')
-#        self.__configurarEixo2D(self.eixo, 'R X T', T, Y3, tracejado, m, 'R (Qtd de computadores removidos)')
-#        self.__configurarEixo2D(self.eixo, 'A X T', T, Y4, tracejado, m, 'Y4 (Qtd de computadores vacinados não-infectados)')
-        
-        self.__configurarEixo3D(self.eixo, 'S x I x R', Y1, Y2, Y3, tracejado, m)
+        self.__configurarEixo2D(self.eixo1, 'S X T - Sem ponto de equilíbrio endêmico', T, Y1, tracejado, m, 'S (Qtd de computadores suscetíveis não-infectados)')
+        self.__configurarEixo2D(self.eixo2, 'I X T - Sem ponto de equilíbrio endêmico', T, Y2, tracejado, m, 'I (Qtd de computadores infectados)')
+        self.__configurarEixo2D(self.eixo3, 'R X T - Sem ponto de equilíbrio endêmico', T, Y3, tracejado, m, 'R (Qtd de computadores removidos)')
+        self.__configurarEixo2D(self.eixo4, 'A X T - Sem ponto de equilíbrio endêmico', T, Y4, tracejado, m, 'Y4 (Qtd de computadores vacinados não-infectados)')
+        self.__configurarEixo3D(self.eixo5, 'S x I x R', Y1, Y2, Y3, tracejado, m)        
 
 
     def __configurarEixo3D(self, eixo, titulo, S, I, R, tracejado, m):
@@ -74,7 +91,11 @@ class ConstrutorDeGrafico:
         self.eixo.legend()
 
     def mostrar(self):
-        self.gs.tight_layout(self.fig)
+        self.gs.tight_layout(self.fig1)
+        self.gs.tight_layout(self.fig2)
+        self.gs.tight_layout(self.fig3)
+        self.gs.tight_layout(self.fig4)
+        self.gs.tight_layout(self.fig5)
 #Fim da classe CONSTRUTORDEGRAFICO
 
 
@@ -284,7 +305,8 @@ def main():
     construtorDeGrafico = ConstrutorDeGrafico()
 
     construtorDeGrafico.adicionar(sim_d.nomeArquivoDeSaida(), sim_d.m, ':')
-    construtorDeGrafico.adicionar(sim_j.nomeArquivoDeSaida(), sim_j.m, '-.')
+#    construtorDeGrafico.adicionar(sim_j.nomeArquivoDeSaida(), sim_j.m, '-.')
+#    construtorDeGrafico.adicionar(sim_b.nomeArquivoDeSaida(), sim_j.b, ':')
 
 #    GeradorDeSolucaoExata()
 #    construtorDeGrafico.adicionarSolucaoExata()
