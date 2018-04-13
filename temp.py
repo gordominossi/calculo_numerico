@@ -15,6 +15,7 @@ Referencias:
 import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+from scipy.interpolate import CubicSpline
 import math
 
 #Classe CONSTRUTORDEGRAFICO
@@ -23,8 +24,11 @@ class ConstrutorDeGrafico:
     def __init__(self):
         self.fig = plt.figure()
         self.gs = gridspec.GridSpec(1, 1)
-#        self.eixo = self.fig.add_subplot(self.gs[0])
-        self.eixo = self.fig.add_subplot(self.gs[0], projection='3d')
+
+        #Grafico 2D
+        self.eixo = self.fig.add_subplot(self.gs[0])        
+        #Grafico 3D
+#        self.eixo = self.fig.add_subplot(self.gs[0], projection='3d')
 
 
     def adicionar(self, arquivo, m, tracejado):
@@ -40,13 +44,15 @@ class ConstrutorDeGrafico:
 #População de computadores removidos
 #  computadores vacinados não-infectados
         
+        #Grafico 3D
         #TROCAR PARA IMPRIMIR UM GRAFICO POR VEZ. SINCRONIZAR COM SOLUCAO EXATA
-#        self.__configurarEixo2D(self.eixo, 'S X T', T, Y1, tracejado, m, 'S (Qtd de computadores suscetíveis não-infectados)')
-#        self.__configurarEixo2D(self.eixo, 'I X T', T, Y2, tracejado, m, 'I (Qtd de computadores infectados)')
-#        self.__configurarEixo2D(self.eixo, 'R X T', T, Y3, tracejado, m, 'R (Qtd de computadores removidos)')
-#        self.__configurarEixo2D(self.eixo, 'A X T', T, Y4, tracejado, m, 'Y4 (Qtd de computadores vacinados não-infectados)')
+        self.__configurarEixo2D(self.eixo, 'S X T - Com ponto de equilíbrio endêmico', T, Y1, tracejado, m, 'S (Qtd de computadores suscetíveis não-infectados)')
+#        self.__configurarEixo2D(self.eixo, 'I X T - Sem ponto de equilíbrio endêmico', T, Y2, tracejado, m, 'I (Qtd de computadores infectados)')
+#        self.__configurarEixo2D(self.eixo, 'R X T - Sem ponto de equilíbrio endêmico', T, Y3, tracejado, m, 'R (Qtd de computadores removidos)')
+#        self.__configurarEixo2D(self.eixo, 'A X T - Sem ponto de equilíbrio endêmico', T, Y4, tracejado, m, 'A (Qtd de computadores vacinados não-infectados)')
         
-        self.__configurarEixo3D(self.eixo, 'S x I x R', Y1, Y2, Y3, tracejado, m)
+        #Grafico 3D
+#        self.__configurarEixo3D(self.eixo, 'S x I x R', Y1, Y2, Y3, tracejado, m)
 
 
     def __configurarEixo3D(self, eixo, titulo, S, I, R, tracejado, m):
@@ -58,8 +64,10 @@ class ConstrutorDeGrafico:
         eixo.legend()
         
     def __configurarEixo2D(self, eixo, titulo, T, valores, tracejado, m, rotulo_y):
+        cs = CubicSpline(T, valores)
         eixo.set_title(titulo)
-        eixo.plot(T, valores, tracejado, label='m = ' + str(m), color="black")
+        eixo.plot(T, cs(T), label='Cubic Spline', color="black")
+#        eixo.plot(T, valores, tracejado, label='m = ' + str(m), color="black")
         eixo.set_ylabel(rotulo_y)
         eixo.set_xlabel('T (unidades de tempo)')
         eixo.legend()
@@ -197,22 +205,6 @@ class Simulador:
     def __RK33(self, k1, k2, k3):
         return (k1 + 4 * k2 + k3)/6
     #FIM do RUNGE-KUTTA 3 ORDEM
-    
-    
-#    def __fi(self, ylinha, tk, h, y1_k, y2_k, y3_k, y4_k):
-#        return self.__rungeKuttaTerceiraOrdem(ylinha, tk, h, y1_k, y2_k, y3_k, y4_k)
-#    
-#    def __rungeKuttaTerceiraOrdem(self, ylinha, tk, h, y1_k, y2_k, y3_k, y4_k):
-#        k1 = h * ylinha(tk, y1_k, y2_k, y3_k, y4_k)
-#        
-#        k2_fator = (k1/2)
-#        k2 = h * ylinha(tk + h/2, y1_k + k2_fator, y2_k + k2_fator, y3_k + k2_fator, y4_k + k2_fator)
-#        
-#        k3_fator = - k1 + (2*k2)
-#        k3 = h * ylinha(tk + h, y1_k + k3_fator, y2_k + k3_fator, y3_k + k3_fator, y4_k + k3_fator)
-#        
-#        return (k1 + 4 * k2 + k3)/6
-    
 
     def __y1Linha(self, tk, y1_k, y2_k, y3_k, y4_k, ):
         return self.npc - (self.isv*y1_k*y4_k) - (self.isi*y1_k*y2_k) - (self.tm*y1_k) + (self.cpc*y3_k)
@@ -283,8 +275,9 @@ def main():
 
     construtorDeGrafico = ConstrutorDeGrafico()
 
-    construtorDeGrafico.adicionar(sim_d.nomeArquivoDeSaida(), sim_d.m, ':')
-    construtorDeGrafico.adicionar(sim_j.nomeArquivoDeSaida(), sim_j.m, '-.')
+    construtorDeGrafico.adicionar(sim_a.nomeArquivoDeSaida(), sim_a.m, '-.')
+#    construtorDeGrafico.adicionar(sim_d.nomeArquivoDeSaida(), sim_d.m, ':')
+#    construtorDeGrafico.adicionar(sim_e.nomeArquivoDeSaida(), sim_e.m, '--')
 
 #    GeradorDeSolucaoExata()
 #    construtorDeGrafico.adicionarSolucaoExata()
